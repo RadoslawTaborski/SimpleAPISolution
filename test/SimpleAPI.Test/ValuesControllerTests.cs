@@ -23,6 +23,6 @@ namespace SimpleAPI.Test
             Assert.Equal(2, returnValue.Value.Count());
             Assert.Contains("dotnet", returnValue.Value);
             Assert.Contains("azure", returnValue.Value);
-        }`
+        }
     }
 }
