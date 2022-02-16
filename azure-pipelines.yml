@@ -12,6 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 steps:
 
@@ -25,6 +26,7 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  condition: eq(variables.isMain, 'true')
   displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
   inputs:
     command: publish
@@ -34,4 +36,5 @@ steps:
     zipAfterPublish: true
 
 - task: PublishBuildArtifacts@1
+  condition: eq(variables.isMain, 'true')
   displayName: 'publish artifacts'
