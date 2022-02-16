@@ -14,27 +14,35 @@ variables:
   buildConfiguration: 'Release'
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
-steps:
+stages:
+- stage: BUILD
+  jobs:
+  - job: TESTS
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: test
+        projects: '**/*Test/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+  - job: BUILD
+    steps:
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'dotnet build $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: '**/*Test/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  condition: eq(variables.isMain, 'true')
-  displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: 'src/SimpleAPI/SimpleAPI.csproj'
-    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: true
-
-- task: PublishBuildArtifacts@1
-  condition: eq(variables.isMain, 'true')
-  displayName: 'publish artifacts'
+- stage: PUBLISH
+  condition: and(succeeded(), eq(variables.isMain, 'true'))
+  jobs:
+  - job: PUBLISH-1
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SimpleAPI/SimpleAPI.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+  - job: PUBLISH-2
+    steps:
+      - task: PublishBuildArtifacts@1
+        displayName: 'publish artifacts'
