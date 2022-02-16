@@ -26,10 +26,11 @@ stages:
         projects: '**/*Test/*.csproj'
         arguments: '--configuration $(buildConfiguration)'
     - script: dotnet build --configuration $(buildConfiguration)
+      condition: succeeded()
       displayName: 'build $(buildConfiguration)'
 
-${{ if eq(Build.SourceBranch, 'refs/heads/master') }}:
 - stage: PUBLISH
+  condition: and(succeeded(), eq(Build.SourceBranch, 'refs/heads/master'))
   jobs:
   - job:
     steps:
@@ -42,4 +43,5 @@ ${{ if eq(Build.SourceBranch, 'refs/heads/master') }}:
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
     - task: PublishBuildArtifacts@1
+      condition: succeeded()
       displayName: 'publish artifacts'
