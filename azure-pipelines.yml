@@ -25,6 +25,11 @@ stages:
         command: test
         projects: '**/*Test/*.csproj'
         arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'publish code coverage results'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/*coverage.cobertura.xml'
     - script: dotnet build --configuration $(buildConfiguration)
       condition: succeeded()
       displayName: 'build $(buildConfiguration)'
