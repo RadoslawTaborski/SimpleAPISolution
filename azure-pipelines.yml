@@ -20,6 +20,11 @@ stages:
   - job:
     steps:
     - task: DotNetCoreCLI@2
+      displayName: 'build $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
       displayName: 'test $(buildConfiguration)'
       inputs:
         command: test
@@ -31,9 +36,6 @@ stages:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '**/*coverage.cobertura.xml'
-    - script: dotnet build --configuration $(buildConfiguration)
-      condition: succeeded()
-      displayName: 'build $(buildConfiguration)'
 
 - stage: PUBLISH
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
