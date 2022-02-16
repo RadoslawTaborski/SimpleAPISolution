@@ -20,7 +20,7 @@ stages:
   - job:
     steps:
     - task: DotNetCoreCLI@2  
-      displayName: 'dotnet restore'  
+      displayName: 'restore'  
       inputs:  
         command: restore  
         projects: '**/*Test/*.csproj' 
@@ -38,7 +38,9 @@ stages:
         projects: '**/*Test/*.csproj'
         publishTestResults: true
         arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
-    - script: '$HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'  
+    - bash: |
+        export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
+        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
       displayName: 'create reports'  
     - task: PublishCodeCoverageResults@1
       displayName: 'publish code coverage'
