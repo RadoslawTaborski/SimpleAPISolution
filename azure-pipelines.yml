@@ -32,7 +32,7 @@ stages:
 - stage: PUBLISH
   condition: and(succeeded(), eq(variables.isMain, 'true'))
   jobs:
-  - job: PUBLISH-1
+  - job: PUBLISH_1
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
@@ -42,7 +42,7 @@ stages:
         projects: 'src/SimpleAPI/SimpleAPI.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
-  - job: PUBLISH-2
+  - job: PUBLISH_2
     steps:
       - task: PublishBuildArtifacts@1
         displayName: 'publish artifacts'
