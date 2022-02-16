@@ -38,7 +38,7 @@ stages:
         projects: '**/*Test/*.csproj'
         publishTestResults: true
         arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
-    - script: './tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'  
+    - script: '$HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'  
       displayName: 'create reports'  
     - task: PublishCodeCoverageResults@1
       displayName: 'publish code coverage'
