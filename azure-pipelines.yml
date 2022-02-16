@@ -28,8 +28,8 @@ stages:
     - script: dotnet build --configuration $(buildConfiguration)
       displayName: 'build $(buildConfiguration)'
 
+${{ if eq(Build.SourceBranch, 'refs/heads/master') }}:
 - stage: PUBLISH
-  condition: and(succeeded(), eq(variables.isMain, 'true'))
   jobs:
   - job:
     steps:
