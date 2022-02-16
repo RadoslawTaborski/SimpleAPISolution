@@ -20,14 +20,22 @@ stages:
   - job:
     steps:
     - task: DotNetCoreCLI@2
+      displayName: 'build $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
       displayName: 'test $(buildConfiguration)'
       inputs:
         command: test
         projects: '**/*Test/*.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-    - script: dotnet build --configuration $(buildConfiguration)
-      condition: succeeded()
-      displayName: 'build $(buildConfiguration)'
+        publishTestResults: true
+        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'publish code coverage results'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/*coverage.cobertura.xml'
 
 - stage: PUBLISH
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
