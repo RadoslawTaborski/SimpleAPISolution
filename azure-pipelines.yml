@@ -15,7 +15,7 @@ variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 stages:
-- stage: TESTS
+- stage: UNIT TESTS
   jobs:
   - job:
     steps:
@@ -38,8 +38,6 @@ stages:
         projects: '**/*Test/*.csproj'
         publishTestResults: true
         arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
-    - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'  
-      displayName: 'install ReportGenerator tool' 
     - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'  
       displayName: 'create reports'  
     - task: PublishCodeCoverageResults@1
