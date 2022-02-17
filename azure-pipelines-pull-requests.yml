@@ -14,7 +14,7 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: UNIT_TESTS
+- stage: STATIC_ANALYSIS
   jobs:
   - job:
     steps:
@@ -22,7 +22,10 @@ stages:
         echo "Post label at https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels/"
         curl -X POST -H "Accept: application/vnd.github.v3+json" -d ["bug"] https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels/
       displayName: static analysis label
-      name: checkPrLabel
+- stage: UNIT_TESTS
+  jobs:
+  - job:
+    steps:
     - task: DotNetCoreCLI@2  
       displayName: 'restore'  
       inputs:  
