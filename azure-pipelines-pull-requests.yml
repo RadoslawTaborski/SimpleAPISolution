@@ -67,20 +67,3 @@ stages:
           **/*/*.csproj
           !**/*Test/*.csproj
         arguments: '--configuration $(buildConfiguration)'
-
-- stage: PUBLISH
-  condition: succeeded()
-  jobs:
-  - job:
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: 'publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      inputs:
-        command: publish
-        publishWebProjects: false
-        projects: 'src/SimpleAPI/SimpleAPI.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        zipAfterPublish: true
-    - task: PublishBuildArtifacts@1
-      condition: succeeded()
-      displayName: 'publish artifacts'
