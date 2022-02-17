@@ -1,0 +1,69 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- master
+
+pool: 
+  name: RaspberryPi
+  vmImage: 'Ubuntu-20.04'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: UNIT_TESTS
+  jobs:
+  - job:
+    steps:
+    - task: DotNetCoreCLI@2  
+      displayName: 'restore'  
+      inputs:  
+        command: restore  
+        projects: '**/*Test/*.csproj' 
+        includeNuGetOrg: true  
+    - task: DotNetCoreCLI@2
+      displayName: 'build $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        projects: '**/*Test/*.csproj' 
+        arguments: '--configuration $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'test $(buildConfiguration)'
+      inputs:
+        command: test
+        projects: '**/*Test/*.csproj'
+        publishTestResults: true
+        arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'
+    - bash: |
+        export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
+        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
+      displayName: 'create reports'  
+    - task: PublishCodeCoverageResults@1
+      displayName: 'publish code coverage'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'  
+        
+- stage: BUILD
+  jobs:
+  - job:
+    steps:
+    - task: DotNetCoreCLI@2  
+      displayName: 'dotnet restore'  
+      inputs:  
+        command: restore  
+        projects: |
+          **/*/*.csproj
+          !**/*Test/*.csproj
+        includeNuGetOrg: true  
+    - task: DotNetCoreCLI@2
+      displayName: 'build $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        projects: |
+          **/*/*.csproj
+          !**/*Test/*.csproj
+        arguments: '--configuration $(buildConfiguration)'
