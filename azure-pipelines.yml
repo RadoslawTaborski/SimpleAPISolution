@@ -4,9 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-  branches:
-    include:
-    - master
+- master
 
 pool: 
   name: RaspberryPi
@@ -14,7 +12,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 stages:
 - stage: UNIT_TESTS
@@ -72,7 +69,7 @@ stages:
         arguments: '--configuration $(buildConfiguration)'
 
 - stage: PUBLISH
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: succeeded()
   jobs:
   - job:
     steps:
