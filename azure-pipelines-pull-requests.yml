@@ -19,7 +19,7 @@ stages:
   - job:
     steps:
     - bash: |
-        echo "Post label at https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels/"
+        echo "curl -X POST -H "Accept: application/vnd.github.v3+json" -d ["bug"] https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels/"
         curl -X POST -H "Accept: application/vnd.github.v3+json" -d ["bug"] https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels/
       displayName: static analysis label
 - stage: UNIT_TESTS
