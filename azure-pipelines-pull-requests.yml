@@ -14,11 +14,28 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: UNIT_TESTS
+- stage: STATIC_ANALYSIS
   jobs:
   - job:
     steps:
-    - task: DotNetCoreCLI@2  
+    - bash: |
+        echo "request: curl -i -X POST -H "Accept: application/vnd.github.v3+json" -d [\"bug\"] https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels"
+        response=$(curl -i -X POST -H "Accept: application/vnd.github.v3+json" -d [\"bug\"] https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels)
+        if echo "$response" | grep "HTTP/2 200"
+        then
+	        echo "success"
+        else
+	        echo "$response"
+          exit 1
+        fi
+      displayName: static analysis label
+      name: statAnLabel
+- stage: UNIT_TESTS
+  dependsOn: STATIC_ANALYSIS
+  jobs:
+  - job:
+    steps:
+    - task: DotNetCoreCLI@2
       displayName: 'restore'  
       inputs:  
         command: restore  
