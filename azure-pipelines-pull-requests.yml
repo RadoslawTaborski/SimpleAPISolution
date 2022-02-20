@@ -26,7 +26,7 @@ stages:
         projectKey: 'radoslawtaborski_SimpleAPI'
         projectName: 'SimpleAPI'
     - task: DotNetCoreCLI@2  
-      displayName: 'dotnet restore'  
+      displayName: 'DotnetRestore'  
       inputs:  
         command: restore  
         projects: |
@@ -34,7 +34,7 @@ stages:
           !**/*Test/*.csproj
         includeNuGetOrg: true  
     - task: DotNetCoreCLI@2
-      displayName: 'build $(buildConfiguration)'
+      displayName: 'Build$(buildConfiguration)'
       inputs:
         command: 'build'
         projects: |
