@@ -14,7 +14,7 @@ namespace SimpleAPI.Test
         {
             var returnValue = controller.Get(1);
             Assert.Equal("Rado", returnValue.Value); 
-        }
+        } 
 
         [Fact]
         public void GetActionResult_ReturnsDotnetAndAzure()
