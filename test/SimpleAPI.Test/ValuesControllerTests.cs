@@ -21,7 +21,7 @@ namespace SimpleAPI.Test
         {
             var returnValue = controller.GetActionResult();
             Assert.Equal(2, returnValue.Value.Count());
-            Assert.Contains("dotnet", returnValue.Value);
+            Assert.Contains("dotnet", returnValue.Value); 
             Assert.Contains("azure", returnValue.Value);
         }
     }
