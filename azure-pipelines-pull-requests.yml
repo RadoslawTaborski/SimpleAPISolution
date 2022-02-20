@@ -18,6 +18,33 @@ stages:
   jobs:
   - job:
     steps:
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'Sonar Cloud'
+        organization: 'radoslawtaborski'
+        scannerMode: 'MSBuild'
+        projectKey: 'radoslawtaborski_SimpleAPI'
+        projectName: 'SimpleAPI'
+    - task: DotNetCoreCLI@2  
+      displayName: 'dotnet restore'  
+      inputs:  
+        command: restore  
+        projects: |
+          **/*/*.csproj
+          !**/*Test/*.csproj
+        includeNuGetOrg: true  
+    - task: DotNetCoreCLI@2
+      displayName: 'build $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        projects: |
+          **/*/*.csproj
+          !**/*Test/*.csproj
+        arguments: '--configuration $(buildConfiguration)'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
     - bash: |
         echo "request: curl -i -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token OOOOOOOOOOOOOOOO" -d '["static analysis: ok"]' https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels"
         response=$(curl -i -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $(GITHUB_PAT)" -d '["static analysis: ok"]' https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels)
