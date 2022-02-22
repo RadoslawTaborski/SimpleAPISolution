@@ -14,24 +14,34 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: UNIT_TESTS
+- stage: MASTER_PIPELINE
   jobs:
   - job:
     steps:
+    - task: SonarCloudPrepare@1
+      displayName: SonarCloudPrepare
+      inputs:
+        SonarCloud: 'Sonar Cloud'
+        organization: 'radoslawtaborski-github'
+        scannerMode: 'MSBuild'
+        projectKey: 'RadoslawTaborski_SimpleAPISolution'
+        projectName: 'SimpleAPI'
     - task: DotNetCoreCLI@2  
-      displayName: 'restore'  
+      displayName: 'DotnetRestore'  
       inputs:  
         command: restore  
-        projects: '**/*Test/*.csproj' 
+        projects: |
+          **/*/*.csproj
         includeNuGetOrg: true  
     - task: DotNetCoreCLI@2
-      displayName: 'build $(buildConfiguration)'
+      displayName: 'DotnetBuild$(buildConfiguration)'
       inputs:
         command: 'build'
-        projects: '**/*Test/*.csproj' 
+        projects: |
+          **/*/*.csproj
         arguments: '--configuration $(buildConfiguration)'
     - task: DotNetCoreCLI@2
-      displayName: 'test $(buildConfiguration)'
+      displayName: 'DotnetTest$(buildConfiguration)'
       inputs:
         command: test
         projects: '**/*Test/*.csproj'
@@ -40,41 +50,26 @@ stages:
     - bash: |
         export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
         $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
-      displayName: 'create reports'  
+      displayName: 'CodeCoverageReportCreation'  
     - task: PublishCodeCoverageResults@1
-      displayName: 'publish code coverage'
+      displayName: 'CodeCoveragePublish'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'  
-        
-- stage: BUILD
-  jobs:
-  - job:
-    steps:
-    - task: DotNetCoreCLI@2  
-      displayName: 'dotnet restore'  
-      inputs:  
-        command: restore  
-        projects: |
-          **/*/*.csproj
-          !**/*Test/*.csproj
-        includeNuGetOrg: true  
-    - task: DotNetCoreCLI@2
-      displayName: 'build $(buildConfiguration)'
+        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+    - task: SonarCloudAnalyze@1
+      displayName: SonarCloudAnalyze
+    - task: SonarCloudPublish@1
+      displayName: SonarCloudPublish
       inputs:
-        command: 'build'
-        projects: |
-          **/*/*.csproj
-          !**/*Test/*.csproj
-        arguments: '--configuration $(buildConfiguration)'
+        pollingTimeoutSec: '300'
 
-- stage: PUBLISH
+- stage: MASTER_PUBLISH
   condition: succeeded()
   jobs:
   - job:
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      displayName: 'DotnetPublish$(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
       inputs:
         command: publish
         publishWebProjects: false
@@ -83,4 +78,4 @@ stages:
         zipAfterPublish: true
     - task: PublishBuildArtifacts@1
       condition: succeeded()
-      displayName: 'publish artifacts'
+      displayName: 'ArtifactsPublish'
