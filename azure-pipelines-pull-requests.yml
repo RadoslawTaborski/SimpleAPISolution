@@ -28,7 +28,7 @@ stages:
         projectName: 'SimpleAPI'
         extraProperties: |
           sonar.verbose=true
-          sonar.cobertura.reportPaths=$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
+          sonar.cobertura.reportPaths=$(Agent.TempDirectory)/**/coverage.cobertura.xml
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
       inputs:  
