@@ -34,14 +34,14 @@ stages:
           **/*/*.csproj
         includeNuGetOrg: true  
     - task: DotNetCoreCLI@2
-      displayName: 'DotnetBuild $(buildConfiguration)'
+      displayName: 'DotnetBuild$(buildConfiguration)'
       inputs:
         command: 'build'
         projects: |
           **/*/*.csproj
         arguments: '--configuration $(buildConfiguration)'
     - task: DotNetCoreCLI@2
-      displayName: 'DotnetTest $(buildConfiguration)'
+      displayName: 'DotnetTest$(buildConfiguration)'
       inputs:
         command: test
         projects: '**/*Test/*.csproj'
