@@ -19,6 +19,7 @@ stages:
   - job:
     steps:
     - task: SonarCloudPrepare@1
+      displayName: SonarCloudPrepare
       inputs:
         SonarCloud: 'Sonar Cloud'
         organization: 'radoslawtaborski-github'
@@ -31,51 +32,27 @@ stages:
         command: restore  
         projects: |
           **/*/*.csproj
-          !**/*Test/*.csproj
         includeNuGetOrg: true  
     - task: DotNetCoreCLI@2
-      displayName: 'Build$(buildConfiguration)'
+      displayName: 'DotnetBuild $(buildConfiguration)'
       inputs:
         command: 'build'
         projects: |
           **/*/*.csproj
-          !**/*Test/*.csproj
         arguments: '--configuration $(buildConfiguration)'
     - task: SonarCloudAnalyze@1
+      displayName: SonarCloudAnalyze
     - task: SonarCloudPublish@1
+      displayName: SonarCloudPublish
       inputs:
         pollingTimeoutSec: '300'
-    - bash: |
-        echo "request: curl -i -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token OOOOOOOOOOOOOOOO" -d '["static analysis: ok"]' https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels"
-        response=$(curl -i -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $(GITHUB_PAT)" -d '["static analysis: ok"]' https://api.github.com/repos/$BUILD_REPOSITORY_ID/issues/$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER/labels)
-        if echo "$response" | grep "HTTP/2 200"
-        then
-          echo "success"
-        else
-          echo "$response"
-        exit 1
-        fi
-      displayName: static analysis label
-      name: statAnLabel
 - stage: UNIT_TESTS
   dependsOn: STATIC_ANALYSIS
   jobs:
   - job:
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'restore'  
-      inputs:  
-        command: restore  
-        projects: '**/*Test/*.csproj' 
-        includeNuGetOrg: true  
-    - task: DotNetCoreCLI@2
-      displayName: 'build $(buildConfiguration)'
-      inputs:
-        command: 'build'
-        projects: '**/*Test/*.csproj' 
-        arguments: '--configuration $(buildConfiguration)'
-    - task: DotNetCoreCLI@2
-      displayName: 'test $(buildConfiguration)'
+      displayName: 'DotnetTest $(buildConfiguration)'
       inputs:
         command: test
         projects: '**/*Test/*.csproj'
@@ -86,28 +63,7 @@ stages:
         $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
       displayName: 'create reports'  
     - task: PublishCodeCoverageResults@1
-      displayName: 'publish code coverage'
+      displayName: 'CodeCoveragePublish'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'  
-        
-- stage: BUILD
-  jobs:
-  - job:
-    steps:
-    - task: DotNetCoreCLI@2  
-      displayName: 'dotnet restore'  
-      inputs:  
-        command: restore  
-        projects: |
-          **/*/*.csproj
-          !**/*Test/*.csproj
-        includeNuGetOrg: true  
-    - task: DotNetCoreCLI@2
-      displayName: 'build $(buildConfiguration)'
-      inputs:
-        command: 'build'
-        projects: |
-          **/*/*.csproj
-          !**/*Test/*.csproj
-        arguments: '--configuration $(buildConfiguration)'
+        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
