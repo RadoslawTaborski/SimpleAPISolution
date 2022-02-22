@@ -21,9 +21,9 @@ stages:
     - task: SonarCloudPrepare@1
       inputs:
         SonarCloud: 'Sonar Cloud'
-        organization: 'radoslawtaborski'
+        organization: 'radoslawtaborski-github'
         scannerMode: 'MSBuild'
-        projectKey: 'radoslawtaborski_SimpleAPI'
+        projectKey: 'RadoslawTaborski_SimpleAPISolution'
         projectName: 'SimpleAPI'
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
