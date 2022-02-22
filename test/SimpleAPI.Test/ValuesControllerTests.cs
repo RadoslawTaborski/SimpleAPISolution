@@ -5,7 +5,7 @@ using Xunit;
 
 namespace SimpleAPI.Test
 {
-    public class ValuesControllerTests
+    public class ValuesControllerTests 
     {
         ValuesController controller = new ValuesController();
 
