@@ -48,7 +48,7 @@ stages:
         command: test
         projects: '**/*Test/*.csproj'
         publishTestResults: true
-        arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
+        arguments: '--configuration $(buildConfiguration) --settings **/coverlet.runsettings.xml'
     - bash: |
         export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
         $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura;Html"  
