@@ -26,6 +26,8 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'RadoslawTaborski_SimpleAPISolution'
         projectName: 'SimpleAPI'
+        extraProperties: |
+          sonar.cs.cobertura.reportPaths=$(Agent.TempDirectory)/**/coverage.cobertura.xml
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
       inputs:  
