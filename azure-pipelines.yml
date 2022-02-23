@@ -27,10 +27,7 @@ stages:
         projectKey: 'RadoslawTaborski_SimpleAPISolution'
         projectName: 'SimpleAPI'
         extraProperties: |
-          sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
           sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
-          sonar.qualitygate.wait=true
-          sonar.verbose=true
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
       inputs:  
