@@ -53,7 +53,7 @@ stages:
         arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover'
     - bash: |
         export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
-        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
+        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
       displayName: 'CodeCoverageReportCreation'  
     - task: PublishCodeCoverageResults@1
       displayName: 'CodeCoveragePublish'
