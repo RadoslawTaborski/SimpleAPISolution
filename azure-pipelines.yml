@@ -28,7 +28,7 @@ stages:
         projectName: 'SimpleAPI'
         extraProperties: |
           sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
-          sonar.cs.opencover.reportPaths=$(Agent.TempDirectory)/**/coverage.cobertura.xml
+          sonar.cs.opencover.reportPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
           sonar.qualitygate.wait=true
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
