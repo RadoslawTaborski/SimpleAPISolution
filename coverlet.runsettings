@@ -9,9 +9,7 @@
           <CodeCoverage>
             <ModulePaths>
               <Exclude>
-                <ModulePath>.*test\.dll</ModulePath>
                 <ModulePath>.*Test\.dll</ModulePath>
-                <ModulePath>.*tests\.dll</ModulePath>
                 <ModulePath>.*Tests\.dll</ModulePath>
               </Exclude>
             </ModulePaths>
