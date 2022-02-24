@@ -12,6 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  classes-to-exclude-from-coverage: "-SimpleAPI.Program;-SimpleAPI.Startup"
 
 stages:
 - stage: PULL_REQUESTS_PIPELINE
@@ -48,10 +49,10 @@ stages:
         command: test
         projects: '**/*Test/*.csproj'
         publishTestResults: true
-        arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover'
+        arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml -classfilters:''$(classes-to-exclude-from-coverage)'''
     - bash: |
         export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
-        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura;Html"  
+        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"  
       displayName: 'CodeCoverageReportCreation'  
     - task: PublishCodeCoverageResults@1
       displayName: 'CodeCoveragePublish'
