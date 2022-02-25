@@ -27,7 +27,7 @@ stages:
         projectKey: 'RadoslawTaborski_SimpleAPISolution'
         projectName: 'SimpleAPI'
         extraProperties: |
-          sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
+          sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
           sonar.coverage.exclusions=**/Migrations/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
@@ -52,7 +52,7 @@ stages:
         arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
     - bash: |
         export DOTNET_ROOT=$(dirname $(realpath $(which dotnet)))
-        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
+        $HOME/.dotnet/tools/reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura;SonarQube"
       displayName: 'CodeCoverageReportCreation'  
     - task: PublishCodeCoverageResults@1
       displayName: 'CodeCoveragePublish'
