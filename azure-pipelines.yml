@@ -51,7 +51,7 @@ stages:
         projects: '**/*Test/*.csproj'
         publishTestResults: true
         arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
-    - task: reportgenerator@4
+    - task: reportgenerator@5
       inputs:
         reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
         targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
