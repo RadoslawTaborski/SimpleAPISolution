@@ -1,4 +1,4 @@
-# SimpleAPISolution
+# SimpleAPISolution 
 # Build details
 | Build & tests | Code coverage | Static analyze status |
 |:-------------:|:-------------:|:---------------------:|
