@@ -99,7 +99,6 @@ stages:
     - task: Docker@2
       displayName: PushDockerImage
       inputs:
-        containerRegistry: |
-          Docker Hub
-          repository: $(imageName)
-          command: push
+        containerRegistry: 'Docker Hub'
+        repository: $(imageName)
+        command: push
