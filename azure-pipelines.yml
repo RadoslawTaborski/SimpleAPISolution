@@ -83,7 +83,7 @@ stages:
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
     - bash: |
-        cd $(Build.ArtifactStagingDirectory)/../
+        cd $(Build.ArtifactStagingDirectory)/
         ls -R
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
@@ -96,8 +96,7 @@ stages:
         tag: $(Build.BuildNumber)
         title: v$(Build.BuildId)
         assets: |
-          $(Build.ArtifactStagingDirectory)/../*.zip
-          $(Build.ArtifactStagingDirectory)/README.txt
+          $(Build.ArtifactStagingDirectory)/*.zip
         addChangeLog: true
     - task: PublishBuildArtifacts@1
       condition: succeeded()
