@@ -12,7 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  ImageName: 'rado94/simple-api'
+  imageName: 'rado94/simple-api'
 
 stages:
 - stage: MASTER_PIPELINE
@@ -91,16 +91,8 @@ stages:
   - job: 
     steps:
     - task: Docker@2
-      displayName: 'BuildDockerImage'
-      inputs:
-        repository: $(imageName)
-        command: build
-        Dockerfile: Dockerfile
-        tags: |
-          build-on-agent
-    - task: Docker@2
-      displayName: PushDockerImage
       inputs:
         containerRegistry: 'Docker Hub'
-        repository: $(imageName)
-        command: push
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
