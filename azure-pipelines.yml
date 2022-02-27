@@ -12,6 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  imageName: 'rado94/simple-api'
 
 stages:
 - stage: MASTER_PIPELINE
@@ -74,13 +75,39 @@ stages:
   - job:
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'DotnetPublish$(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      displayName: 'DotnetPublish$(buildConfiguration)'
       inputs:
         command: publish
         publishWebProjects: false
         projects: 'src/SimpleAPI/SimpleAPI.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
+    - task: GithubRelease@1 
+      displayName: 'CreateGitHubRelease'
+      inputs:
+        gitHubConnection: github.com_RadoslawTaborski
+        repositoryName: 'RadoslawTaborski/SimpleAPISolution'
+        action: 'create'
+        target: '$(Build.SourceVersion)'
+        tagSource: 'userSpecifiedTag'
+        tag: $(Build.BuildNumber)
+        title: v$(Build.BuildId)
+        assets: |
+          $(Build.ArtifactStagingDirectory)/*.zip
+        addChangeLog: true
     - task: PublishBuildArtifacts@1
       condition: succeeded()
       displayName: 'ArtifactsPublish'
+
+- stage: MASTER_DOCKER
+  jobs:  
+  - job: 
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+         $(Build.BuildId)
