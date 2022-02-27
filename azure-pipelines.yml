@@ -93,13 +93,13 @@ stages:
     - task: Docker@2
       displayName: 'BuildDockerImage'
       inputs:
-        containerRegistry: $(imageName)'Docker Hub'
+        containerRegistry: $(imageName)
         repository: 'Docker Hub'
         command: build
         Dockerfile: Dockerfile
     - task: Docker@2
       displayName: PushDockerImage
       inputs:
-        containerRegistry: $(imageName)'Docker Hub'
+        containerRegistry: $(imageName)
         repository: 'Docker Hub'
         command: push
