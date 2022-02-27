@@ -88,7 +88,7 @@ stages:
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
-        gitHubConnection: RadoslawTaborski
+        gitHubConnection: github.com_RadoslawTaborski
         repositoryName: 'RadoslawTaborski/SimpleAPISolution'
         action: 'create'
         target: '$(Build.SourceVersion)'
