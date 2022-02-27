@@ -12,7 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  ImageName: 'rado94/simple-api:$(Build.BuildId)'
+  ImageName: 'rado94/simple-api'
 
 stages:
 - stage: MASTER_PIPELINE
