@@ -85,14 +85,14 @@ stages:
     - task: PublishBuildArtifacts@1
       condition: succeeded()
       displayName: 'ArtifactsPublish'
-    - task: PowerShell@2
-      displayName: 'GetLatestSHAcommmit'  
+    - task: GithubRelease@1 
+      displayName: 'CreateGitHubRelease'
       inputs:
-        targetType: 'inline'
-        script: |
-          $commits = Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/Account/repo/commits"
-          $sha = $commits[0].sha
-          Write-Host "##vso[task.setvariable variable=sha;]$sha"
+        gitHubConnection: RadoslawTaborski
+        repositoryName: 'RadoslawTaborski/SimpleAPISolution'
+        tag: $(Build.BuildNumber)
+        assets: |
+          $(Build.ArtifactStagingDirectory)/README.txt
 
 - stage: MASTER_DOCKER
   jobs:  
