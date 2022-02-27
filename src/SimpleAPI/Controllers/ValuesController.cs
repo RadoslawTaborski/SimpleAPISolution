@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +17,14 @@ namespace SimpleAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id) 
         {
-            return "Radox";
+            return "Radox"; 
         }
 
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            
+            Console.WriteLine("value");
+            throw new NotImplementedException();
         }
     }
 }
