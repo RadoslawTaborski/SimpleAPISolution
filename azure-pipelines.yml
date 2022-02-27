@@ -83,10 +83,8 @@ stages:
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
     - bash: |
-        cd $(Build.ArtifactStagingDirectory)
-        ls
-        cd $(Build.ArtifactStagingDirectory)/..
-        ls
+        cd $(Build.ArtifactStagingDirectory)/../
+        ls -R
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
