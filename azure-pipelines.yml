@@ -94,8 +94,11 @@ stages:
         target: '$(Build.SourceVersion)'
         tagSource: 'userSpecifiedTag'
         tag: $(Build.BuildNumber)
+        title: v$(Build.BuildId)
         assets: |
+          $(Build.ArtifactStagingDirectory)/release/*.dll
           $(Build.ArtifactStagingDirectory)/README.txt
+        addChangeLog: true
 
 - stage: MASTER_DOCKER
   jobs:  
@@ -108,5 +111,5 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: |
-         'latest'
+         latest
          $(Build.BuildId)
