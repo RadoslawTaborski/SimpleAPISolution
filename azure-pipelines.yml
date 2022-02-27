@@ -96,8 +96,8 @@ stages:
         tag: $(Build.BuildNumber)
         title: v$(Build.BuildId)
         assets: |
-          $(Build.ArtifactStagingDirectory)/release/*.dll
-          $(Build.ArtifactStagingDirectory)/README.txt
+          $(Build.ArtifactStagingDirectory)/**/*.dll
+          $(Build.ArtifactStagingDirectory)/**/README.txt
         addChangeLog: true
 
 - stage: MASTER_DOCKER
