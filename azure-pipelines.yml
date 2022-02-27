@@ -12,7 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  ImageName: 'rado94/simple-api:$(Build.BuildId)'
+  imageName: 'rado94/simple-api'
 
 stages:
 - stage: MASTER_PIPELINE
@@ -89,24 +89,10 @@ stages:
 - stage: MASTER_DOCKER
   jobs:  
   - job: 
-    displayName: Build and push Docker image
     steps:
-    - task: Docker@1
-      displayName: 'BuildDockerImage'
+    - task: Docker@2
       inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Build an image'
-        dockerFile: '**/Dockerfile'
-        imageName: '$(ImageName)'
-        includeLatestTag: true
-        useDefaultContext: false
-        buildContext: '.'   
-    - task: Docker@1
-      displayName: 'PushDockerImage'
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'Docker Hub'
-        command: 'Push an image'
-        imageName: '$(ImageName)'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        containerRegistry: 'Docker Hub'
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
