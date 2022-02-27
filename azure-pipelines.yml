@@ -75,16 +75,13 @@ stages:
   - job:
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'DotnetPublish$(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      displayName: 'DotnetPublish$(buildConfiguration)'
       inputs:
         command: publish
         publishWebProjects: false
         projects: 'src/SimpleAPI/SimpleAPI.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
-    - task: PublishBuildArtifacts@1
-      condition: succeeded()
-      displayName: 'ArtifactsPublish'
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
@@ -96,9 +93,12 @@ stages:
         tag: $(Build.BuildNumber)
         title: v$(Build.BuildId)
         assets: |
-          $(Build.ArtifactStagingDirectory)/**/*.dll
-          $(Build.ArtifactStagingDirectory)/**/README.txt
+          $(Build.ArtifactStagingDirectory)/../*.zip
+          $(Build.ArtifactStagingDirectory)/README.txt
         addChangeLog: true
+    - task: PublishBuildArtifacts@1
+      condition: succeeded()
+      displayName: 'ArtifactsPublish'
 
 - stage: MASTER_DOCKER
   jobs:  
