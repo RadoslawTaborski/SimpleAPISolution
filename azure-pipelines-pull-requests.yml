@@ -29,7 +29,7 @@ stages:
         extraProperties: |
           sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
           sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
-          sonar.coverage.exclusions=**/Migrations/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
+          sonar.coverage.exclusions=**/Migrations/*.cs,**/Model/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
       inputs:  
