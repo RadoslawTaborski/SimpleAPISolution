@@ -7,7 +7,7 @@ namespace SimpleAPI.Controllers;
 [ApiController]
 public class StatusesController : ControllerBase
 {
-    private StatusRepository _repository;
+    private readonly StatusRepository _repository;
 
     public StatusesController(StatusRepository repository)
     {

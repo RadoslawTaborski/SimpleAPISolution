@@ -5,7 +5,7 @@ namespace SimpleAPI.Repositories;
 
 public class StatusRepository : IDisposable
 {
-    private TestContext _context;
+    private readonly TestContext _context;
 
     public StatusRepository(TestContext context)
     {
@@ -61,14 +61,6 @@ public class StatusRepository : IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
         GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-        }
     }
 }
