@@ -30,6 +30,10 @@ stages:
           sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
           sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
           sonar.coverage.exclusions=**/Migrations/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
+    - task: UseDotNet@2
+      inputs:
+        version: '6.0.x'
+        packageType: runtime
     - task: DotNetCoreCLI@2  
       displayName: 'DotnetRestore'  
       inputs:  
