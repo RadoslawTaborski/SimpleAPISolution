@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace SimpleAPI.Models
+namespace SimpleAPI.Models;
+public class TestContext : DbContext
 {
-    public class TestContext : DbContext
+    public DbSet<Status> Statuses => Set<Status>();
+
+    public TestContext(DbContextOptions<TestContext> options) : base(options)
     {
-        public DbSet<Status> Statuses { get; set; }
 
-        public TestContext(DbContextOptions<TestContext> options) : base(options)
-        { }
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
-    } 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+    }
 }

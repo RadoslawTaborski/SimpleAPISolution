@@ -2,39 +2,36 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SimpleAPI.Models;
 
-namespace SimpleAPI.Migrations
+namespace SimpleAPI.Migrations;
+[DbContext(typeof(TestContext))]
+[Migration("20220302184830_AddStatusToDB")]
+partial class AddStatusToDB
 {
-    [DbContext(typeof(TestContext))]
-    [Migration("20220302184830_AddStatusToDB")]
-    partial class AddStatusToDB
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.14")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+        modelBuilder
+            .HasAnnotation("Relational:MaxIdentifierLength", 63)
+            .HasAnnotation("ProductVersion", "5.0.14")
+            .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("SimpleAPI.Model.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+        modelBuilder.Entity("SimpleAPI.Model.Status", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Name")
-                        .HasColumnType("integer");
+                b.Property<int>("Name")
+                    .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Statuses");
-                });
+                b.ToTable("Statuses");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }
