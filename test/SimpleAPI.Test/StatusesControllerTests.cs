@@ -2,17 +2,19 @@ using System;
 using System.Linq;
 using Moq;
 using SimpleAPI.Controllers;
+using SimpleAPI.Repositories;
 using Xunit;
 
 namespace SimpleAPI.Test;
 
-public class ValuesControllerTests
+public class StatusesControllerTests
 {
-    ValuesController controller = new ValuesController();
 
     [Fact]
     public void Get_ReturnsMyNick()
     {
+        var repository = new Mock<StatusRepository>();
+        var controller = new StatusesController(repository.Object);
         var returnValue = controller.Get(1);
         Assert.Equal("Radox", returnValue.Value);
     }
@@ -20,6 +22,8 @@ public class ValuesControllerTests
     [Fact]
     public void GetActionResult_ReturnsDotnetAndAzure()
     {
+        var repository = new Mock<StatusRepository>();
+        var controller = new StatusesController(repository.Object);
         var returnValue = controller.GetActionResult();
         Assert.Equal(2, returnValue.Value.Count());
         Assert.Contains("dotnet", returnValue.Value);
@@ -29,6 +33,8 @@ public class ValuesControllerTests
     [Fact]
     public void Post_ThrowNotImplementedException()
     {
+        var repository = new Mock<StatusRepository>();
+        var controller = new StatusesController(repository.Object);
         Assert.Throws<NotImplementedException>(() => controller.Post(It.IsAny<string>()));
     }
 }

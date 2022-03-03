@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using SimpleAPI.Repositories;
 
 namespace SimpleAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ValuesController : ControllerBase
+public class StatusesController : ControllerBase
 {
+    private StatusRepository _repository;
+
+    public StatusesController(StatusRepository repository)
+    {
+        _repository = repository;
+    }
+
     [HttpGet]
     public ActionResult<IEnumerable<string>> GetActionResult()
     {

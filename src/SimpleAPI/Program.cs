@@ -1,5 +1,6 @@
 using Serilog;
 using Microsoft.OpenApi.Models;
+using SimpleAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleAPI", Version = "v1" });
 });
+
+builder.Services.AddTransient<StatusRepository>();
 
 var app = builder.Build();
 
