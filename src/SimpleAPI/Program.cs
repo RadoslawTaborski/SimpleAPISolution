@@ -1,6 +1,8 @@
 using Serilog;
 using Microsoft.OpenApi.Models;
 using SimpleAPI.Repositories;
+using SimpleAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
@@ -17,7 +19,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleAPI", Version = "v1" });
 });
-
+builder.Services.AddDbContext<TestContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddTransient<StatusRepository>();
 
 var app = builder.Build();
@@ -29,7 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SimpleAPI v1"));
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

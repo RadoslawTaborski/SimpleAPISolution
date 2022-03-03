@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SimpleAPI.Models;
 using SimpleAPI.Repositories;
 
 namespace SimpleAPI.Controllers;
@@ -15,21 +16,24 @@ public class StatusesController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<string>> GetActionResult()
+    public async Task<ActionResult<IEnumerable<Status>>> Get()
     {
-        return new string[] { "dotnet", "azure" };
+        return Ok((await _repository.Get()).Collection);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<string> Get(int id)
+    public async Task<ActionResult<Status>> Get(int id)
     {
-        return "Radox";
+        Status? st = await _repository.Get(id);
+        return st!=null?Ok(st):NotFound();
     }
 
     [HttpPost]
-    public void Post([FromBody] string value)
+    public async Task Post([FromBody] Status value)
     {
-        Console.WriteLine("value");
-        throw new NotImplementedException();
+        if(value==null){
+            return;
+        }
+        await _repository.Add(value);
     }
 }

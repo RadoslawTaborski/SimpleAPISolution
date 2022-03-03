@@ -17,7 +17,7 @@ public class StatusRepository : IDisposable
         return await _context.Statuses.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public virtual async Task<(IEnumerable<Status>, int)> Get()
+    public async Task<(IEnumerable<Status> Collection, int Size)> Get()
     {
         IEnumerable<Status> collection = await _context.Statuses.ToListAsync();
 
