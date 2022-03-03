@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace SimpleAPI.Model
+namespace SimpleAPI.Models
 {
     public class TestContext : DbContext
     {
@@ -16,5 +16,5 @@ namespace SimpleAPI.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
         }
-    }
+    } 
 }

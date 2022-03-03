@@ -1,4 +1,4 @@
-namespace SimpleAPI.Model
+namespace SimpleAPI.Models
 {
     public class Status
     {

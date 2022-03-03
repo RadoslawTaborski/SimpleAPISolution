@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /src
 
 COPY SimpleAPISln.sln /src/
@@ -17,7 +17,7 @@ RUN dotnet build -c Release -o /app
 FROM build-env AS publish
 RUN dotnet publish -c Release -o /app/out -r linux-arm
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 EXPOSE 80
 COPY --from=publish /app/out .

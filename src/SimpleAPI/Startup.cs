@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Npgsql;
-using SimpleAPI.Model;
+using SimpleAPI.Models;
 
 namespace SimpleAPI
 {
