@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0.200 AS build-env
 WORKDIR /src
 USER root
 
@@ -18,7 +18,7 @@ RUN dotnet build -c Release -o /app
 FROM build-env AS publish
 RUN dotnet publish -c Release -o /app/out -r linux-arm
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.200
 WORKDIR /app
 EXPOSE 80
 COPY --from=publish /app/out .
