@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleAPI.Models;
 using SimpleAPI.Repositories;
+using ILogger = Serilog.ILogger;
 
 namespace SimpleAPI.Controllers;
 
@@ -8,10 +9,12 @@ namespace SimpleAPI.Controllers;
 [ApiController]
 public class StatusesController : ControllerBase
 {
+    private readonly ILogger _logger;
     private readonly IStatusRepository _repository;
 
-    public StatusesController(IStatusRepository repository)
+    public StatusesController(ILogger logger, IStatusRepository repository)
     {
+        _logger = logger;
         _repository = repository;
     }
 

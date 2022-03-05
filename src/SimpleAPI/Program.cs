@@ -5,13 +5,7 @@ using SimpleAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration.Enrich.FromLogContext()
-        .WriteTo.Console()
-        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
-        .ReadFrom.Configuration(context.Configuration);
-});
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -10,6 +10,12 @@ services:
       - '5432:5432'
     volumes: 
       - db:/var/lib/postgresql/data
+  api:
+    image: rado94/simple-api:latest
+    ports:
+      - 5100:80
+    depends_on:
+      - db
 volumes:
   db:
     driver: local

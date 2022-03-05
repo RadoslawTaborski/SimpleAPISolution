@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Serilog.Core;
 using SimpleAPI.Controllers;
 using SimpleAPI.Repositories;
 using Xunit;
@@ -16,7 +17,8 @@ public class StatusesControllerTests
         var repository = new Mock<IStatusRepository>();
         Models.Status value = new() { Id=1, Name="test"};
         repository.Setup(m=>m.Get(It.IsAny<int>())).ReturnsAsync(value);
-        var controller = new StatusesController(repository.Object);
+        var logger = new Mock<Serilog.ILogger>();
+        var controller = new StatusesController(logger.Object, repository.Object);
         var returnValue = await controller.Get(1);
         var okObjectResult = returnValue.Result as OkObjectResult;
         Assert.NotNull(okObjectResult);

@@ -86,6 +86,12 @@ stages:
         projects: 'src/SimpleAPI/SimpleAPI.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
+    - task: CopyFiles@2
+      displayName: 'CopyDockerCompose'
+      inputs:
+        contents: '**/docker-compose.yml' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+        cleanTargetFolder: true
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
@@ -98,6 +104,7 @@ stages:
         title: v$(Build.BuildId)
         assets: |
           $(Build.ArtifactStagingDirectory)/*.zip
+          $(Build.ArtifactStagingDirectory)/docker-compose.yml
         addChangeLog: true
     - task: PublishBuildArtifacts@1
       condition: succeeded()
