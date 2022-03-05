@@ -91,7 +91,6 @@ stages:
       inputs:
         contents: '**/docker-compose.yml' 
         targetFolder: '$(Build.ArtifactStagingDirectory)'
-        cleanTargetFolder: true
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
