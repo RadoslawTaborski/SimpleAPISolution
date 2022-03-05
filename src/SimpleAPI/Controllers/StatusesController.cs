@@ -8,9 +8,9 @@ namespace SimpleAPI.Controllers;
 [ApiController]
 public class StatusesController : ControllerBase
 {
-    private readonly StatusRepository _repository;
+    private readonly IStatusRepository _repository;
 
-    public StatusesController(StatusRepository repository)
+    public StatusesController(IStatusRepository repository)
     {
         _repository = repository;
     }

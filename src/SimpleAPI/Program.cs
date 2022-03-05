@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleAPI", Version = "v1" });
 });
 builder.Services.AddDbContext<TestContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
-builder.Services.AddTransient<StatusRepository>();
+builder.Services.AddTransient<IStatusRepository, StatusRepository>();
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SimpleAPI.Controllers;
 using SimpleAPI.Repositories;
@@ -9,32 +10,19 @@ namespace SimpleAPI.Test;
 
 public class StatusesControllerTests
 {
-//TODO:
-    // [Fact]
-    // public void Get_ReturnsMyNick()
-    // {
-    //     var repository = new Mock<StatusRepository>();
-    //     var controller = new StatusesController(repository.Object);
-    //     var returnValue = controller.Get(1);
-    //     Assert.Equal("Radox", returnValue.Value);
-    // }
-
-    // [Fact]
-    // public void GetActionResult_ReturnsDotnetAndAzure()
-    // {
-    //     var repository = new Mock<StatusRepository>();
-    //     var controller = new StatusesController(repository.Object);
-    //     var returnValue = controller.GetActionResult();
-    //     Assert.Equal(2, returnValue.Value.Count());
-    //     Assert.Contains("dotnet", returnValue.Value);
-    //     Assert.Contains("azure", returnValue.Value);
-    // }
-
-    // [Fact]
-    // public void Post_ThrowNotImplementedException()
-    // {
-    //     var repository = new Mock<StatusRepository>();
-    //     var controller = new StatusesController(repository.Object);
-    //     Assert.Throws<NotImplementedException>(() => controller.Post(It.IsAny<string>()));
-    // }
+    [Fact]
+    public async void Get_Element1_ReturnsTestsStatus()
+    {
+        var repository = new Mock<IStatusRepository>();
+        Models.Status value = new() { Id=1, Name="test"};
+        repository.Setup(m=>m.Get(It.IsAny<int>())).ReturnsAsync(value);
+        var controller = new StatusesController(repository.Object);
+        var returnValue = await controller.Get(1);
+        var okObjectResult = returnValue.Result as OkObjectResult;
+        Assert.NotNull(okObjectResult);
+        var model = okObjectResult.Value as Models.Status;
+        Assert.NotNull(model);
+        Assert.Equal(1, model.Id);
+        Assert.Equal("test", model.Name);
+    }
 }

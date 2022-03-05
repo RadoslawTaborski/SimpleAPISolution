@@ -3,7 +3,7 @@ using SimpleAPI.Models;
 
 namespace SimpleAPI.Repositories;
 
-public class StatusRepository : IDisposable
+public class StatusRepository : IDisposable, IStatusRepository
 {
     private readonly TestContext _context;
 
@@ -40,7 +40,7 @@ public class StatusRepository : IDisposable
         return element;
     }
 
-    public virtual async Task<bool> DeleteItem(Status entity)
+    public async Task<bool> DeleteItem(Status entity)
     {
         _context.Statuses.Remove(entity);
         await _context.SaveChangesAsync();
@@ -48,15 +48,10 @@ public class StatusRepository : IDisposable
         return true;
     }
 
-    public virtual async Task<bool> Exists(byte[] uuid)
+    public async Task<bool> Exists(byte[] uuid)
     {
         var entity = await _context.Statuses.FindAsync(uuid);
         return entity != null;
-    }
-
-    public bool IsNull(string data)
-    {
-        return string.IsNullOrWhiteSpace(data);
     }
 
     public void Dispose()
