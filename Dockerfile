@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /src
+USER Administrator
 
 COPY SimpleAPISln.sln /src/
 COPY src/SimpleAPI/*.csproj /src/src/SimpleAPI/
