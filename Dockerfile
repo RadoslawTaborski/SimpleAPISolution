@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0.200-alpine3.14-arm32v7 AS build-env
 WORKDIR /src
 USER root
 
