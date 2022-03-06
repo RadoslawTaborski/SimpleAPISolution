@@ -4,7 +4,7 @@ using ILogger = Serilog.ILogger;
 namespace SimpleAPI.Models;
 public class TestContext : DbContext
 {
-    private ILogger _logger;
+    private readonly ILogger _logger;
 
     public DbSet<Status> Statuses => Set<Status>();
 

@@ -56,6 +56,19 @@ public class StatusRepository : IDisposable, IStatusRepository
 
     public void Dispose()
     {
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if(!disposing)
+            return;
+        _context.Dispose();
+    }
+
+    ~StatusRepository()
+    {
+        Dispose(false);
     }
 }
