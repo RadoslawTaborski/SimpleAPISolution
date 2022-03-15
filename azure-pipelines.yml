@@ -73,6 +73,19 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
+- stage: MASTER_DOCKER
+  jobs:  
+  - job: 
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+         latest
+
 - stage: MASTER_PUBLISH
   condition: succeeded()
   jobs:
@@ -108,16 +121,3 @@ stages:
     - task: PublishBuildArtifacts@1
       condition: succeeded()
       displayName: 'ArtifactsPublish'
-
-- stage: MASTER_DOCKER
-  jobs:  
-  - job: 
-    steps:
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub'
-        repository: '$(imageName)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: |
-         $(Build.BuildId)
