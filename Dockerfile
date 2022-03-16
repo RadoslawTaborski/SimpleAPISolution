@@ -11,10 +11,6 @@ COPY src/SimpleAPI/. /src/src/SimpleAPI/
 WORKDIR /src/src/SimpleAPI
 RUN dotnet build -c Release -o /app
 
-COPY test/SimpleAPI.Test/. /src/test/SimpleAPI.Test/
-WORKDIR /src/test/SimpleAPI.Test
-RUN dotnet build -c Release -o /app
-
 FROM build-env AS publish
 RUN dotnet publish -c Release -o /app/out -r linux-arm
 
