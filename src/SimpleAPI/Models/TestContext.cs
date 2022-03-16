@@ -12,7 +12,13 @@ public class TestContext : DbContext
     { 
         this._logger = logger;
         _logger.Information("Migrations just started.");
-        this.Database.MigrateAsync();
+        this.Database.Migrate();
         _logger.Information("Migrations just finished.");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("public");
+        base.OnModelCreating(modelBuilder);
     }
 }
