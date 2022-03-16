@@ -4,6 +4,10 @@ using SimpleAPI.Repositories;
 using SimpleAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
 
@@ -13,7 +17,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleAPI", Version = "v1" });
 });
-builder.Services.AddDbContext<TestContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+var connectionString = builder.Configuration.GetConnectionString("Default");
+Log.Information(connectionString);
+builder.Services.AddDbContext<TestContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddTransient<IStatusRepository, StatusRepository>();
 
 var app = builder.Build();
