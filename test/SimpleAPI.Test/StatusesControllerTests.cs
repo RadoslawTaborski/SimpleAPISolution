@@ -15,7 +15,7 @@ public class StatusesControllerTests
     public async void Get_Element1_ReturnsTestsStatus()
     {
         var repository = new Mock<IStatusRepository>();
-        Models.Status value = new() { Id=1, Name="test"};
+        Models.Status value = new() { Id=1, Name="test", Old = false};
         repository.Setup(m=>m.Get(It.IsAny<int>())).ReturnsAsync(value);
         var logger = new Mock<Serilog.ILogger>();
         var controller = new StatusesController(logger.Object, repository.Object);
@@ -26,5 +26,6 @@ public class StatusesControllerTests
         Assert.NotNull(model);
         Assert.Equal(1, model.Id);
         Assert.Equal("test", model.Name);
+        Assert.Equal(false, model.Old);
     }
 }
