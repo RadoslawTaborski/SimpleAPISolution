@@ -11,6 +11,8 @@ public class Status
     public int Id { get; set; }
     [Required]   
     public string Name { get; set; }
+    [Required]   
+    public bool Old { get; set; }
     
     #pragma warning restore CS8618 
 }
