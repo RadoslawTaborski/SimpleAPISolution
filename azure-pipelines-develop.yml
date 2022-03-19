@@ -1,0 +1,124 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- develop
+
+pool: 
+  name: RaspberryPi
+  vmImage: 'Ubuntu-20.04'
+
+variables:
+  buildConfiguration: 'Release'
+  imageName: 'rado94/simple-api'
+
+stages:
+- stage: DEVELOP_PIPELINE
+  jobs:
+  - job:
+    steps:
+    - task: SonarCloudPrepare@1
+      displayName: SonarCloudPrepare
+      inputs:
+        SonarCloud: 'Sonar Cloud'
+        organization: 'radoslawtaborski-github'
+        scannerMode: 'MSBuild'
+        projectKey: 'RadoslawTaborski_SimpleAPISolution'
+        projectName: 'SimpleAPI'
+        extraProperties: |
+          sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
+          sonar.coverage.exclusions=**/Migrations/*.cs,**/Models/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
+    - task: DotNetCoreCLI@2  
+      displayName: 'DotnetRestore'  
+      inputs:  
+        command: restore  
+        projects: |
+          **/*/*.csproj
+        includeNuGetOrg: true  
+    - task: DotNetCoreCLI@2
+      displayName: 'DotnetBuild$(buildConfiguration)'
+      inputs:
+        command: 'build'
+        projects: |
+          **/*/*.csproj
+        arguments: '--configuration $(buildConfiguration)'
+    - task: UseDotNet@2
+      inputs:
+        version: '6.0.x'
+        packageType: runtime
+    - task: DotNetCoreCLI@2
+      displayName: 'DotnetTest$(buildConfiguration)'
+      inputs:
+        command: test
+        projects: '**/*Test/*.csproj'
+        publishTestResults: true
+        arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
+    - task: reportgenerator@5
+      inputs:
+        reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
+        targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
+        reporttypes: 'Cobertura;SonarQube'
+      displayName: 'CodeCoverageReportCreation'  
+    - task: PublishCodeCoverageResults@1
+      displayName: 'CodeCoveragePublish'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+    - task: SonarCloudAnalyze@1
+      displayName: SonarCloudAnalyze
+    - task: SonarCloudPublish@1
+      displayName: SonarCloudPublish
+      inputs:
+        pollingTimeoutSec: '300'
+
+- stage: DEVELOP_DOCKER
+  jobs:  
+  - job: 
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub'
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+         dev-latest
+
+- stage: DEVELOP_PUBLISH
+  condition: succeeded()
+  jobs:
+  - job:
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'DotnetPublish$(buildConfiguration)'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'src/SimpleAPI/SimpleAPI.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+    - task: CopyFiles@2
+      displayName: 'CopyDockerCompose'
+      inputs:
+        contents: '**/docker-compose.yml' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: GithubRelease@1 
+      displayName: 'CreateGitHubRelease'
+      inputs:
+        gitHubConnection: github.com_RadoslawTaborski
+        repositoryName: 'RadoslawTaborski/SimpleAPISolution'
+        action: 'create'
+        target: '$(Build.SourceVersion)'
+        tagSource: 'userSpecifiedTag'
+        tag: pre-$(Build.BuildNumber)
+        title: pre-v$(Build.BuildId)
+        assets: |
+          $(Build.ArtifactStagingDirectory)/*.zip
+          $(Build.ArtifactStagingDirectory)/docker-compose.yml
+          $(Build.ArtifactStagingDirectory)/docker-compose-develop.yml
+        addChangeLog: true
+    - task: PublishBuildArtifacts@1
+      condition: succeeded()
+      displayName: 'ArtifactsPublish'
