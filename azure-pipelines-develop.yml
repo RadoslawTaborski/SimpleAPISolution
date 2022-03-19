@@ -104,6 +104,11 @@ stages:
       inputs:
         contents: '**/docker-compose.yml' 
         targetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: CopyFiles@2
+      displayName: 'CopyDockerComposeDevelop'
+      inputs:
+        contents: '**/docker-compose-develop.yml' 
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: GithubRelease@1 
       displayName: 'CreateGitHubRelease'
       inputs:
