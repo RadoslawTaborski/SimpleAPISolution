@@ -13,6 +13,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
+  major: 1
+  minor: 0
+  patch: $[counter(format('{0}.{1}',variables.major ,variables.minor), 0)]
+  version: $(major).$(minor).$(patch)
 
 stages:
 - stage: MASTER_PIPELINE
@@ -112,8 +116,8 @@ stages:
         action: 'create'
         target: '$(Build.SourceVersion)'
         tagSource: 'userSpecifiedTag'
-        tag: $(Build.BuildNumber)
-        title: v$(Build.BuildId)
+        tag: $(version)
+        title: $(version)
         assets: |
           $(Build.ArtifactStagingDirectory)/*.zip
           $(Build.ArtifactStagingDirectory)/docker-compose.yml
