@@ -2,6 +2,7 @@
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+name: $(major).$(minor).$(patch).DEV
 
 trigger:
 - develop
@@ -13,6 +14,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
+  major: 1
+  minor: 0
+  patch: $[counter(format('{0}.{1}',variables.major ,variables.minor), 0)]
+  version: $(major).$(minor).$(patch).DEV
 
 stages:
 - stage: DEVELOP_PIPELINE
@@ -84,6 +89,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: |
+         $(Build.BuildNumber)
          dev-latest
 
 - stage: DEVELOP_PUBLISH
@@ -117,8 +123,8 @@ stages:
         action: 'create'
         target: '$(Build.SourceVersion)'
         tagSource: 'userSpecifiedTag'
-        tag: pre-$(Build.BuildNumber)
-        title: pre-v$(Build.BuildId)
+        tag: $(Build.BuildNumber)
+        title: $(Build.BuildNumber)
         assets: |
           $(Build.ArtifactStagingDirectory)/*.zip
           $(Build.ArtifactStagingDirectory)/docker-compose.yml
