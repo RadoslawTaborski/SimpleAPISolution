@@ -88,7 +88,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: |
-         latest
+         $(version)
 
 - stage: MASTER_PUBLISH
   condition: succeeded()
