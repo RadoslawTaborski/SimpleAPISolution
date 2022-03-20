@@ -11,7 +11,7 @@ services:
     volumes: 
       - db:/var/lib/postgresql/data
   api:
-    image: rado94/simple-api:${API-TAG}
+    image: rado94/simple-api:${API_TAG}
     ports:
       - 5110:80
     depends_on:
