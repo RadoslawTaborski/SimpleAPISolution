@@ -448,3 +448,47 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 src/SimpleAPI/log*.txt
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+web/simple-api-ui/dist
+web/simple-api-ui/tmp
+web/simple-api-ui/out-tsc
+web/simple-api-ui/bazel-out
+
+# Node
+web/simple-api-ui/node_modules
+web/simple-api-ui/npm-debug.log
+web/simple-api-ui/yarn-error.log
+
+# IDEs and editors
+web/simple-api-ui/.idea/
+web/simple-api-ui/.project
+web/simple-api-ui/.classpath
+web/simple-api-ui/.c9/
+web/simple-api-ui/*.launch
+web/simple-api-ui/.settings/
+web/simple-api-ui/*.sublime-workspace
+
+# Visual Studio Code
+web/simple-api-ui/.vscode/*
+web/simple-api-ui/!.vscode/settings.json
+web/simple-api-ui/!.vscode/tasks.json
+web/simple-api-ui/!.vscode/launch.json
+web/simple-api-ui/!.vscode/extensions.json
+web/simple-api-ui/.history/*
+
+# Miscellaneous
+web/simple-api-ui/.angular/cache
+web/simple-api-ui/.sass-cache/
+web/simple-api-ui/connect.lock
+web/simple-api-ui/coverage
+web/simple-api-ui/libpeerconnection.log
+web/simple-api-ui/testem.log
+web/simple-api-ui/typings
+
+# System files
+.DS_Store
+Thumbs.db
+web/simple-api-ui/.editorconfig
