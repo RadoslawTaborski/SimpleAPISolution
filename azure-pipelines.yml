@@ -56,11 +56,11 @@ stages:
           "variables": {
             "major": {
               "isSecret": false,
-              "value": $(major)
+              "value": "$(major)"
             },
             "minor": {
               "isSecret": false,
-              "value": $(minor)
+              "value": "$(minor)"
             },
             "patch": {
               "isSecret": false,
