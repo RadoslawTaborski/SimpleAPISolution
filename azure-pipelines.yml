@@ -16,9 +16,15 @@ variables:
   imageName: 'rado94/simple-api'
   newPatch: $[counter(format('{0}', variables.patch), 0)]
 
-- bash: |
-     curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
-     -d '{
+stages:
+- stage: MASTER_PIPELINE
+  jobs:
+  - job:
+    steps:
+    - bash: |
+      echo $(newPatch)
+      curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+      -d '{
        "id": "semver",
        "type": "Vsts",
        "name": "patch",
@@ -32,9 +38,9 @@ variables:
            "value": "$(newPatch)"
          }
        }
-     }' \
-     $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/semver?api-version=5.0-preview.1
-   displayName: 'Set variable in variable group to current foo'
+      }' \
+      $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/semver?api-version=5.0-preview.1
+    displayName: 'Set variable in variable group to current foo'
 # stages:
 # - stage: MASTER_PIPELINE
 #   jobs:
