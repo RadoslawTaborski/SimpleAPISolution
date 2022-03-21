@@ -22,7 +22,7 @@ stages:
   - job:
     steps:
     - bash: |
-        curl -fL -XPUT -H "Authorization:Bearer $env:SYSTEM_ACCESSTOKEN" -H "Content-Type:application/json" \
+        curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
         -d '{
           "id": "1",
           "type": "Vsts",
