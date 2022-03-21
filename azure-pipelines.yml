@@ -16,9 +16,6 @@ variables:
   imageName: 'rado94/simple-api'
   newPatch: $[counter(format('{0}', variables.patch), 0)]
 
-env:
-  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-
 stages:
 - stage: MASTER_PIPELINE
   jobs:
@@ -51,7 +48,7 @@ stages:
         }' \
         $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/1?api-version=7.0"
 
-        curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+        curl -fL -XPUT -H "Authorization:Bearer $env:SYSTEM_ACCESSTOKEN" -H "Content-Type:application/json" \
         -d '{
           "id": "1",
           "type": "Vsts",
@@ -77,6 +74,8 @@ stages:
         }' \
         $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/1?api-version=7.0
       displayName: 'SetVersionVariables'
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 # stages:
 # - stage: MASTER_PIPELINE
 #   jobs:
