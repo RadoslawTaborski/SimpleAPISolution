@@ -2,7 +2,7 @@
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-name: $(major).$(minor).$(patch)-beta
+name: $(major).$(minor).$(patch)-beta.$(betapatch)
 
 trigger:
 - develop
@@ -14,10 +14,11 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  major: 1
-  minor: 0
-  patch: $[counter(format('{0}.{1}',variables.major ,variables.minor), 0)]
-  version: $(major).$(minor).$(patch)-beta
+  major: $(semver.major)
+  minor: $(semver.minor)
+  patch: $(semver.patch)
+  betapatch: $[counter($(semver.betapatch), 0)]
+  version: $(major).$(minor).$(patch)-beta.$(betapatch)
 
 stages:
 - stage: DEVELOP_PIPELINE
