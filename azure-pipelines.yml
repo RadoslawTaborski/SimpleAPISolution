@@ -14,9 +14,9 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  major: variables['semver.major']
-  minor: variables['semver.minor']
-  patch: variables['semver.patch']
+  major: '$(semver.major)'
+  minor: '$(semver.minor)'
+  patch: '$(semver.patch)'
   newPatch: $[counter(format('{0}', variables.patch), 0)]
 
 stages:
