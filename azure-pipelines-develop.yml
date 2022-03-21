@@ -14,8 +14,8 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  newPatch: $[counter(format('{0}', variables.patch), -1)]
-  newBetaPatch: $[counter(format('{0}', variables.betapatch), -1)]
+  newPatch: $[counter(format('{0}', variables.patch), 0)]
+  newBetaPatch: $[counter(format('{0}', variables.betapatch), 0)]
 
 stages:
 - stage: DEVELOP_PIPELINE
