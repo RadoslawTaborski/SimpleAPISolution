@@ -16,111 +16,130 @@ variables:
   imageName: 'rado94/simple-api'
   newPatch: $[counter(format('{0}', variables.patch), 0)]
 
-stages:
-- stage: MASTER_PIPELINE
-  jobs:
-  - job:
-    steps:
-    - task: SonarCloudPrepare@1
-      displayName: SonarCloudPrepare
-      inputs:
-        SonarCloud: 'Sonar Cloud'
-        organization: 'radoslawtaborski-github'
-        scannerMode: 'MSBuild'
-        projectKey: 'RadoslawTaborski_SimpleAPISolution'
-        projectName: 'SimpleAPI'
-        extraProperties: |
-          sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
-          sonar.coverage.exclusions=**/Migrations/*.cs,**/Models/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
-    - task: DotNetCoreCLI@2  
-      displayName: 'DotnetRestore'  
-      inputs:  
-        command: restore  
-        projects: |
-          **/*/*.csproj
-        includeNuGetOrg: true  
-    - task: DotNetCoreCLI@2
-      displayName: 'DotnetBuild$(buildConfiguration)'
-      inputs:
-        command: 'build'
-        projects: |
-          **/*/*.csproj
-        arguments: '--configuration $(buildConfiguration)'
-    - task: UseDotNet@2
-      inputs:
-        version: '6.0.x'
-        packageType: runtime
-    - task: DotNetCoreCLI@2
-      displayName: 'DotnetTest$(buildConfiguration)'
-      inputs:
-        command: test
-        projects: '**/*Test/*.csproj'
-        publishTestResults: true
-        arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
-    - task: reportgenerator@5
-      inputs:
-        reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
-        targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
-        reporttypes: 'Cobertura;SonarQube'
-      displayName: 'CodeCoverageReportCreation'  
-    - task: PublishCodeCoverageResults@1
-      displayName: 'CodeCoveragePublish'
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
-    - task: SonarCloudAnalyze@1
-      displayName: SonarCloudAnalyze
-    - task: SonarCloudPublish@1
-      displayName: SonarCloudPublish
-      inputs:
-        pollingTimeoutSec: '300'
+- bash: |
+     curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+     -d '{
+       "id": "semver",
+       "type": "Vsts",
+       "name": "patch",
+       "variables": {
+         "semver": {
+           "isSecret": false,
+           "value": "semver"
+         },
+         "patch": {
+           "isSecret": false,
+           "value": "$(newPatch)"
+         }
+       }
+     }' \
+     $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/semver?api-version=5.0-preview.1
+   displayName: 'Set variable in variable group to current foo'
+# stages:
+# - stage: MASTER_PIPELINE
+#   jobs:
+#   - job:
+#     steps:
+#     - task: SonarCloudPrepare@1
+#       displayName: SonarCloudPrepare
+#       inputs:
+#         SonarCloud: 'Sonar Cloud'
+#         organization: 'radoslawtaborski-github'
+#         scannerMode: 'MSBuild'
+#         projectKey: 'RadoslawTaborski_SimpleAPISolution'
+#         projectName: 'SimpleAPI'
+#         extraProperties: |
+#           sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
+#           sonar.coverage.exclusions=**/Migrations/*.cs,**/Models/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
+#     - task: DotNetCoreCLI@2  
+#       displayName: 'DotnetRestore'  
+#       inputs:  
+#         command: restore  
+#         projects: |
+#           **/*/*.csproj
+#         includeNuGetOrg: true  
+#     - task: DotNetCoreCLI@2
+#       displayName: 'DotnetBuild$(buildConfiguration)'
+#       inputs:
+#         command: 'build'
+#         projects: |
+#           **/*/*.csproj
+#         arguments: '--configuration $(buildConfiguration)'
+#     - task: UseDotNet@2
+#       inputs:
+#         version: '6.0.x'
+#         packageType: runtime
+#     - task: DotNetCoreCLI@2
+#       displayName: 'DotnetTest$(buildConfiguration)'
+#       inputs:
+#         command: test
+#         projects: '**/*Test/*.csproj'
+#         publishTestResults: true
+#         arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
+#     - task: reportgenerator@5
+#       inputs:
+#         reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
+#         targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
+#         reporttypes: 'Cobertura;SonarQube'
+#       displayName: 'CodeCoverageReportCreation'  
+#     - task: PublishCodeCoverageResults@1
+#       displayName: 'CodeCoveragePublish'
+#       inputs:
+#         codeCoverageTool: 'Cobertura'
+#         summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+#     - task: SonarCloudAnalyze@1
+#       displayName: SonarCloudAnalyze
+#     - task: SonarCloudPublish@1
+#       displayName: SonarCloudPublish
+#       inputs:
+#         pollingTimeoutSec: '300'
 
-- stage: MASTER_DOCKER
-  jobs:  
-  - job: 
-    steps:
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub'
-        repository: '$(imageName)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: |
-         $(Build.BuildNumber)
-         latest
+# - stage: MASTER_DOCKER
+#   jobs:  
+#   - job: 
+#     steps:
+#     - task: Docker@2
+#       inputs:
+#         containerRegistry: 'Docker Hub'
+#         repository: '$(imageName)'
+#         command: 'buildAndPush'
+#         Dockerfile: '**/Dockerfile'
+#         tags: |
+#          $(Build.BuildNumber)
+#          latest
 
-- stage: MASTER_PUBLISH
-  condition: succeeded()
-  jobs:
-  - job:
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: 'DotnetPublish$(buildConfiguration)'
-      inputs:
-        command: publish
-        publishWebProjects: false
-        projects: 'src/SimpleAPI/SimpleAPI.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        zipAfterPublish: true
-    - task: CopyFiles@2
-      displayName: 'CopyDockerCompose'
-      inputs:
-        contents: '**/docker-compose.yml' 
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-    - task: GithubRelease@1 
-      displayName: 'CreateGitHubRelease'
-      inputs:
-        gitHubConnection: github.com_RadoslawTaborski
-        repositoryName: 'RadoslawTaborski/SimpleAPISolution'
-        action: 'create'
-        target: '$(Build.SourceVersion)'
-        tagSource: 'userSpecifiedTag'
-        tag: $(Build.BuildNumber)
-        title: $(Build.BuildNumber)
-        assets: |
-          $(Build.ArtifactStagingDirectory)/*.zip
-          $(Build.ArtifactStagingDirectory)/docker-compose.yml
-        addChangeLog: true
-    - task: PublishBuildArtifacts@1
-      condition: succeeded()
-      displayName: 'ArtifactsPublish'
+# - stage: MASTER_PUBLISH
+#   condition: succeeded()
+#   jobs:
+#   - job:
+#     steps:
+#     - task: DotNetCoreCLI@2
+#       displayName: 'DotnetPublish$(buildConfiguration)'
+#       inputs:
+#         command: publish
+#         publishWebProjects: false
+#         projects: 'src/SimpleAPI/SimpleAPI.csproj'
+#         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+#         zipAfterPublish: true
+#     - task: CopyFiles@2
+#       displayName: 'CopyDockerCompose'
+#       inputs:
+#         contents: '**/docker-compose.yml' 
+#         targetFolder: '$(Build.ArtifactStagingDirectory)'
+#     - task: GithubRelease@1 
+#       displayName: 'CreateGitHubRelease'
+#       inputs:
+#         gitHubConnection: github.com_RadoslawTaborski
+#         repositoryName: 'RadoslawTaborski/SimpleAPISolution'
+#         action: 'create'
+#         target: '$(Build.SourceVersion)'
+#         tagSource: 'userSpecifiedTag'
+#         tag: $(Build.BuildNumber)
+#         title: $(Build.BuildNumber)
+#         assets: |
+#           $(Build.ArtifactStagingDirectory)/*.zip
+#           $(Build.ArtifactStagingDirectory)/docker-compose.yml
+#         addChangeLog: true
+#     - task: PublishBuildArtifacts@1
+#       condition: succeeded()
+#       displayName: 'ArtifactsPublish'
