@@ -22,25 +22,25 @@ stages:
   - job:
     steps:
     - bash: |
-      echo $(newPatch)
-      curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
-      -d '{
-       "id": "semver",
-       "type": "Vsts",
-       "name": "patch",
-       "variables": {
-         "semver": {
-           "isSecret": false,
-           "value": "semver"
-         },
-         "patch": {
-           "isSecret": false,
-           "value": "$(newPatch)"
-         }
-       }
-      }' \
-      $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/semver?api-version=5.0-preview.1
-    displayName: 'Set variable in variable group to current foo'
+        echo $(newPatch)
+        curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+        -d '{
+          "id": "semver",
+          "type": "Vsts",
+          "name": "patch",
+          "variables": {
+            "semver": {
+              "isSecret": false,
+              "value": "semver"
+            },
+            "patch": {
+              "isSecret": false,
+              "value": "$(newPatch)"
+            }
+          }
+        }' \
+        $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/semver?api-version=5.0-preview.1
+      displayName: 'Set variable in variable group to current foo'
 # stages:
 # - stage: MASTER_PIPELINE
 #   jobs:
