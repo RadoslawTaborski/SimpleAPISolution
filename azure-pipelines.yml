@@ -14,10 +14,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  major: '$(semver.major)'
-  minor: '$(semver.minor)'
-  patch: '$(semver.patch)'
-  newPatch: $[counter(format('{0}', variables.patch), 0)]
+  major: $[ variablegroups.semver.major ]
+  minor: $[ variablegroups.semver.minor ]
+  patch: $[ variablegroups.semver.patch ]
+  newPatch: $[counter(format('{0}', variables.patch), -1)]
 
 stages:
 - stage: MASTER_PIPELINE
