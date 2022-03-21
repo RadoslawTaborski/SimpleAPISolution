@@ -22,7 +22,32 @@ stages:
   - job:
     steps:
     - bash: |
-        echo $(newPatch)
+        echo "curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+        -d '{
+          "id": "1",
+          "type": "Vsts",
+          "name": "semver",
+          "variables": {
+            "major": {
+              "isSecret": false,
+              "value": $(major)
+            },
+            "minor": {
+              "isSecret": false,
+              "value": $(minor)
+            },
+            "patch": {
+              "isSecret": false,
+              "value": "$(newPatch)"
+            },
+            "betapatch": {
+              "isSecret": false,
+              "value": "0"
+            }
+          }
+        }' \
+        $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/1?api-version=5.0-preview.1"
+        
         curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
         -d '{
           "id": "1",
