@@ -14,7 +14,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  newPatch: $[counter(format('{0}', variables.patch), 0)]
+  newPatch: (variables.patch + 1)
 
 stages:
 - stage: MASTER_PIPELINE
