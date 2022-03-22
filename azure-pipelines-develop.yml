@@ -86,7 +86,6 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: |
          $(Build.BuildNumber)
-         dev-latest
 
 - stage: DEVELOP_PUBLISH
   condition: succeeded()
