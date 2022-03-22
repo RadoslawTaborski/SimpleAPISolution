@@ -21,11 +21,15 @@ stages:
   jobs:
   - job:
     steps:
-    - task: variableupdater@1
+    - task: ManageVariableGroupTask@0
       inputs:
-        VariableGroupId: '1'
-        VariableName: 'patch'
-        NewValue: '$(newPatch)'
+        pat: $(pat)
+        project: 'bd1ea8a2-0fd2-48a9-9eb2-8821e1b654b2'
+        vgname: 'semver'
+        orgname: 'radoslawtaborski'
+        op: 'Update'
+        varops: |
+          = patch => $(newPatch)
 # stages:
 # - stage: MASTER_PIPELINE
 #   jobs:
