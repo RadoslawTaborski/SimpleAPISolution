@@ -20,14 +20,10 @@ stages:
   jobs:
   - job:
     steps:
-    - task: PowerShell@2
+    - bash: |
+        output=$($(patch) + 1)
+        echo "##vso[task.setvariable variable=newPatch;]$output"
       displayName: CalculateNewPatch
-      inputs:
-        targetType: 'inline'
-        script: |
-          [int] $output = ([int] $(patch)) + 1
-          Write-Host "Setting the name of the build to '$buildName'."
-          Write-Host "##vso[newPatch]$output"
     - bash: echo $(newPatch)
       displayName: DisplayNewPatch
     - task: ManageVariableGroupTask@0
