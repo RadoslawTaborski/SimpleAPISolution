@@ -2,7 +2,7 @@
 # Build and test ASP.NET projects.
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-name: $(major).$(minor).$(newPatch)
+name: $(major).$(minor).$(patch)
 
 trigger:
 - master
@@ -21,6 +21,7 @@ stages:
   jobs:
   - job:
     steps:
+    - bash: echo $(newPatch)
     - task: ManageVariableGroupTask@0
       inputs:
         pat: $(pat)
