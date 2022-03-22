@@ -1,4 +1,4 @@
-# SimpleAPISolution 
+# SimpleAPISolution
 | \ | Development | Production |
 |:-------:|:-------------:|:-------------:|
 | Build & tests | [![Build Status](https://dev.azure.com/radoslawtaborski/SimpleAPI/_apis/build/status/RadoslawTaborski.SimpleAPISolution-Develop?branchName=develop)](https://dev.azure.com/radoslawtaborski/SimpleAPI/_build/latest?definitionId=3&branchName=develop) | [![Build Status](https://dev.azure.com/radoslawtaborski/SimpleAPI/_apis/build/status/RadoslawTaborski.SimpleAPISolution?branchName=master)](https://dev.azure.com/radoslawtaborski/SimpleAPI/_build/latest?definitionId=1&branchName=master) |
