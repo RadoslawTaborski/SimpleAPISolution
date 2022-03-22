@@ -14,15 +14,24 @@ pool:
 variables:
   buildConfiguration: 'Release'
   imageName: 'rado94/simple-api'
-  newPatch: (variables.patch + 1)
 
 stages:
 - stage: MASTER_PIPELINE
   jobs:
   - job:
     steps:
+    - task: PowerShell@2
+      displayName: CalculateNewPatch
+      inputs:
+        targetType: 'inline'
+        script: |
+          [int] $output = ([int] $(patch)) + 1
+          Write-Host "Setting the name of the build to '$buildName'."
+          Write-Host "##vso[newPatch]$output"
     - bash: echo $(newPatch)
+      displayName: DisplayNewPatch
     - task: ManageVariableGroupTask@0
+      displayName: UpdatePatch
       inputs:
         pat: $(pat)
         project: 'bd1ea8a2-0fd2-48a9-9eb2-8821e1b654b2'
