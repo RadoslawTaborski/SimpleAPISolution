@@ -78,19 +78,9 @@ stages:
 - stage: DEVELOP_UI_PIPELINE
   jobs:
   - job:
-    steps:  
-    - task: NodeTool@0  
-      inputs:  
-        versionSpec: '16.x'  
-      displayName: 'Install Node.js 16.x'  
+    steps:   
     - task: Npm@1  
-      displayName: 'AngularCLI'  
-      inputs:  
-        command: custom  
-        verbose: false  
-        customCommand: 'install @angular/cli@13.2.1'  
-    - task: Npm@1  
-      displayName: 'npm install'  
+      displayName: 'npmInstall'  
       inputs:  
         verbose: false   
     - task: Npm@1  
