@@ -14,7 +14,7 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: PULL_REQUESTS_PIPELINE
+- stage: PULL_REQUESTS_API_PIPELINE
   jobs:
   - job:
     steps:
@@ -72,3 +72,28 @@ stages:
       displayName: SonarCloudPublish
       inputs:
         pollingTimeoutSec: '300'
+
+- stage: PULL_REQUESTS_UI_PIPELINE
+  jobs:
+  - job:
+    steps:  
+    - task: NodeTool@0  
+      inputs:  
+        versionSpec: '16.x'  
+      displayName: 'Install Node.js 16.x'  
+    - task: Npm@1  
+      displayName: 'AngularCLI'  
+      inputs:  
+        command: custom  
+        verbose: false  
+        customCommand: 'install @angular/cli@13.2.1'  
+    - task: Npm@1  
+      displayName: 'npm install'  
+      inputs:  
+        verbose: false   
+    - task: Npm@1  
+      displayName: Build  
+      inputs:  
+        command: custom  
+        verbose: false  
+        customCommand: 'run build'
