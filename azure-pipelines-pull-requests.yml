@@ -14,61 +14,78 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: PULL_REQUESTS_PIPELINE
+# - stage: PULL_REQUESTS_API_PIPELINE
+#   jobs:
+#   - job:
+#     steps:
+#     - task: SonarCloudPrepare@1
+#       displayName: SonarCloudPrepare
+#       inputs:
+#         SonarCloud: 'Sonar Cloud'
+#         organization: 'radoslawtaborski-github'
+#         scannerMode: 'MSBuild'
+#         projectKey: 'RadoslawTaborski_SimpleAPISolution'
+#         projectName: 'SimpleAPI'
+#         extraProperties: |
+#           sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+#           sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
+#           sonar.coverage.exclusions=**/Migrations/*.cs,**/Models/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
+#     - task: UseDotNet@2
+#       inputs:
+#         version: '6.0.x'
+#         packageType: runtime
+#     - task: DotNetCoreCLI@2  
+#       displayName: 'DotnetRestore'  
+#       inputs:  
+#         command: restore  
+#         projects: |
+#           **/*/*.csproj
+#         includeNuGetOrg: true  
+#     - task: DotNetCoreCLI@2
+#       displayName: 'DotnetBuild$(buildConfiguration)'
+#       inputs:
+#         command: 'build'
+#         projects: |
+#           **/*/*.csproj
+#         arguments: '--configuration $(buildConfiguration)'
+#     - task: DotNetCoreCLI@2
+#       displayName: 'DotnetTest$(buildConfiguration)'
+#       inputs:
+#         command: test
+#         projects: '**/*Test/*.csproj'
+#         publishTestResults: true
+#         arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
+#     - task: reportgenerator@5
+#       inputs:
+#         reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
+#         targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
+#         reporttypes: 'Cobertura;SonarQube'
+#       displayName: 'CodeCoverageReportCreation'  
+#     - task: PublishCodeCoverageResults@1
+#       displayName: 'CodeCoveragePublish'
+#       inputs:
+#         codeCoverageTool: 'Cobertura'
+#         summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+#     - task: SonarCloudAnalyze@1
+#       displayName: SonarCloudAnalyze
+#     - task: SonarCloudPublish@1
+#       displayName: SonarCloudPublish
+#       inputs:
+#         pollingTimeoutSec: '300'
+
+- stage: PULL_REQUESTS_UI_PIPELINE
   jobs:
   - job:
-    steps:
-    - task: SonarCloudPrepare@1
-      displayName: SonarCloudPrepare
-      inputs:
-        SonarCloud: 'Sonar Cloud'
-        organization: 'radoslawtaborski-github'
-        scannerMode: 'MSBuild'
-        projectKey: 'RadoslawTaborski_SimpleAPISolution'
-        projectName: 'SimpleAPI'
-        extraProperties: |
-          sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
-          sonar.coverageReportPaths=$(Build.SourcesDirectory)/coverlet/reports/SonarQube.xml
-          sonar.coverage.exclusions=**/Migrations/*.cs,**/Models/*.cs,**/*Tests*/**/*,**/Program.cs,**/Startup.cs
-    - task: UseDotNet@2
-      inputs:
-        version: '6.0.x'
-        packageType: runtime
-    - task: DotNetCoreCLI@2  
-      displayName: 'DotnetRestore'  
+    steps:   
+    - task: Npm@1  
+      displayName: 'NpmInstall'  
       inputs:  
-        command: restore  
-        projects: |
-          **/*/*.csproj
-        includeNuGetOrg: true  
-    - task: DotNetCoreCLI@2
-      displayName: 'DotnetBuild$(buildConfiguration)'
-      inputs:
-        command: 'build'
-        projects: |
-          **/*/*.csproj
-        arguments: '--configuration $(buildConfiguration)'
-    - task: DotNetCoreCLI@2
-      displayName: 'DotnetTest$(buildConfiguration)'
-      inputs:
-        command: test
-        projects: '**/*Test/*.csproj'
-        publishTestResults: true
-        arguments: '--configuration $(buildConfiguration) --settings coverlet.runsettings.xml'
-    - task: reportgenerator@5
-      inputs:
-        reports: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
-        targetdir: '$(Build.SourcesDirectory)/coverlet/reports'
-        reporttypes: 'Cobertura;SonarQube'
-      displayName: 'CodeCoverageReportCreation'  
-    - task: PublishCodeCoverageResults@1
-      displayName: 'CodeCoveragePublish'
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
-    - task: SonarCloudAnalyze@1
-      displayName: SonarCloudAnalyze
-    - task: SonarCloudPublish@1
-      displayName: SonarCloudPublish
-      inputs:
-        pollingTimeoutSec: '300'
+        workingDir: '$(Build.SourcesDirectory)/web/simple-api-ui/'
+        verbose: false   
+    - task: Npm@1  
+      displayName: Build  
+      inputs:  
+        workingDir: '$(Build.SourcesDirectory)/web/simple-api-ui/'
+        command: custom  
+        verbose: false  
+        customCommand: 'run build'
