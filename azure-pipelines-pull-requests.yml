@@ -78,14 +78,14 @@ stages:
   - job:
     steps:   
     - task: Npm@1  
-      displayName: 'npmInstall'  
+      displayName: 'NpmInstall'  
       inputs:  
-        workingDir: './web/simple-api-ui/'
+        workingDir: '$(Build.SourcesDirectory)/web/simple-api-ui/'
         verbose: false   
     - task: Npm@1  
       displayName: Build  
       inputs:  
-        workingDir: './web/simple-api-ui/'
+        workingDir: '$(Build.SourcesDirectory)/web/simple-api-ui/'
         command: custom  
         verbose: false  
         customCommand: 'run build'
