@@ -80,12 +80,12 @@ stages:
     - task: Npm@1  
       displayName: 'npmInstall'  
       inputs:  
-        workingDir: '**/web/simple-api-ui'
+        workingDir: './web/simple-api-ui/'
         verbose: false   
     - task: Npm@1  
       displayName: Build  
       inputs:  
-        workingDir: '**/web/simple-api-ui'
+        workingDir: './web/simple-api-ui/'
         command: custom  
         verbose: false  
         customCommand: 'run build'
