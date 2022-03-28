@@ -78,14 +78,16 @@ stages:
 - stage: MASTER_UI_PIPELINE
   jobs:
   - job:
-    steps:  
+    steps:   
     - task: Npm@1  
-      displayName: 'npm install'  
+      displayName: 'npmInstall'  
       inputs:  
+        workingDir: '/web/simple-api-ui'
         verbose: false   
     - task: Npm@1  
       displayName: Build  
       inputs:  
+        workingDir: '/web/simple-api-ui'
         command: custom  
         verbose: false  
         customCommand: 'run build'
